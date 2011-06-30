@@ -28,12 +28,13 @@ package com.google.code.flexiframe
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.getQualifiedClassName;
-
+    
     import mx.controls.ToolTip;
     import mx.core.Application;
     import mx.core.Container;
     import mx.core.FlexGlobals;
     import mx.core.IChildList;
+    import mx.core.INavigatorContent;
     import mx.core.UIComponent;
     import mx.events.FlexEvent;
     import mx.events.IndexChangedEvent;
@@ -201,7 +202,7 @@ package com.google.code.flexiframe
         /**
          * The top level Flex application.
          */
-        protected var _application;
+        protected var _application:Object;
 
         /**
          * The source of the IFrame.
@@ -286,14 +287,7 @@ package com.google.code.flexiframe
             }
 
             // Resolve the top level Flex application.
-            if(Application.application != null)
-            {
-                _application = Application.application;
-            }
-            else
-            {
-                _application = FlexGlobals.topLevelApplication;
-            }
+            _application = FlexGlobals.topLevelApplication;
 
             // Get the host info to check for cross-domain issues
             if (!_appHost)
@@ -540,7 +534,7 @@ package com.google.code.flexiframe
         protected function checkDisplay(target:Object, newIndex:Number):Boolean
         {
             var valid:Boolean=false;
-            if (target is Container)
+            if (target is INavigatorContent)
             {
                 var container:DisplayObjectContainer=DisplayObjectContainer(target);
 
@@ -551,8 +545,8 @@ package com.google.code.flexiframe
 
                 for (var item:Object in containerDict)
                 {
-                    var index:Number=lookupIndex(item as Container);
-                    var setting:Number=lookupSetting(item as Container);
+                    var index:Number=lookupIndex(item as INavigatorContent);
+                    var setting:Number=lookupSetting(item as INavigatorContent);
                     valid=valid && (index == setting);
                 }
             }
@@ -745,7 +739,7 @@ package com.google.code.flexiframe
 
             while (current != null)
             {
-                if (current is Container)
+                if (current is INavigatorContent)
                 {
                     if (current.contains(previous))
                     {
@@ -805,7 +799,7 @@ package com.google.code.flexiframe
          *
          * @param target Container object
          */
-        public function lookupIndex(target:Container):Number
+        public function lookupIndex(target:INavigatorContent):Number
         {
             var index:Number=-1;
 
@@ -829,7 +823,7 @@ package com.google.code.flexiframe
          *
          * @param target Container object
          */
-        public function lookupSetting(target:Container):Number
+        public function lookupSetting(target:INavigatorContent):Number
         {
             var index:Number=-1;
 
